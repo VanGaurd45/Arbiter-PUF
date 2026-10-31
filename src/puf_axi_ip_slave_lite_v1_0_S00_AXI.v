@@ -3,11 +3,6 @@
 
 	module puf_axi_ip_slave_lite_v1_0_S00_AXI #
 	(
-		// Users to add parameters here
-
-		// User parameters ends
-		// Do not modify the parameters beyond this line
-
 		// Width of S_AXI data bus
 		parameter integer C_S_AXI_DATA_WIDTH	= 32,
 		// Width of S_AXI address bus
@@ -341,7 +336,7 @@
 	        end                                         
 	// Implement memory mapped register select and read logic generation
 	  // Implement memory mapped register select and read logic generation
-	// MODIFIED TO READ PUF OUTPUTS ON REGISTERS 5, 6, AND 7
+
 	assign S_AXI_RDATA = 
 	    (axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] == 3'h0) ? slv_reg0 : 
 	    (axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] == 3'h1) ? slv_reg1 : 
@@ -384,11 +379,11 @@ wire [31:0] puf_status_wire = {25'd0, puf_error_code_wire, puf_rejected_wire,
 puf_axi_core puf_inst (
     .clk           (S_AXI_ACLK),
     .rst_n         (S_AXI_ARESETN),
-    .start         (start_pulse),          // was .puf_pulse(slv_reg4[0])
+    .start         (start_pulse),          
     .ack           (ack_pulse),
     .puf_challenge ({slv_reg3, slv_reg2, slv_reg1, slv_reg0}),
-    .puf_response  (puf_response_wire),    // [62:0], same as before
-    .puf_valid     (puf_valid_wire),       // [20:0], same as before
+    .puf_response  (puf_response_wire),   
+    .puf_valid     (puf_valid_wire),       
     .busy          (puf_busy_wire),
     .done          (puf_done_wire),
     .error         (puf_error_wire),
