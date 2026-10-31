@@ -1,0 +1,3 @@
+constraints/** linguist-vendored
+bd/** linguist-generated
+overlay/** linguist-generated
