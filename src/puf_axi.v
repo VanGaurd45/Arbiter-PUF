@@ -1,36 +1,3 @@
-
-//  **************************************************************************
-//  THIS IS THE MAIN AXI CORE. DONT CHANGE IT
-//  **************************************************************************
-
-
-//`timescale 1ns / 1ps
-
-//module puf_axi_core (
-//    input  wire clk,
-//    input  wire rst_n,
-//    input  wire puf_pulse,
-//    input  wire [127:0] puf_challenge,
-//    output wire [(21*3)-1:0] puf_response, // 63 bits
-//    output wire [20:0] puf_valid
-//);
-//    // Instantiate ONLY your cryptographic_puf_top here
-//    cryptographic_puf_top #(
-//        .NUM_BLOCKS(21) 
-//    ) puf_array (
-//        .challenge_pulse(puf_pulse),
-//        .master_challenge({21{puf_challenge}}), 
-//        .aggregated_response(puf_response),
-//        .aggregated_valid(puf_valid)
-//    );
-//endmodule
-
-
-
-//  **************************************************************************
-//  THIS IS THE TEST AXI CORE. DO CHANGES HERE
-//  **************************************************************************
-
 `timescale 1ns / 1ps
 
 module puf_axi_core #(
@@ -74,8 +41,7 @@ module puf_axi_core #(
         .aggregated_path_levels(raw_levels)
     );
 
-    // These registers sample asynchronous PUF outputs. They deliberately have
-    // no AXI reset; SETTLE flushes all three stages before they are examined.
+
     (* ASYNC_REG = "TRUE", SHREG_EXTRACT = "NO" *)
     reg [125:0] comp_meta, comp_sync;
     (* ASYNC_REG = "TRUE", SHREG_EXTRACT = "NO" *)
@@ -120,8 +86,7 @@ module puf_axi_core #(
     reg [2:0] pending_error;
     integer block_index;
 
-    // Internal data is written at the start of every request before it is
-    // consumed. Keeping AXI reset off these arrays reduces reset fanout.
+
     always @(posedge clk) begin
         case (state)
             IDLE: if (start && (!done || ack)) begin
@@ -168,7 +133,7 @@ module puf_axi_core #(
             end
 
             DRAIN: begin
-                // Retain pending data until publication or the next request.
+       
             end
 
             default: begin
@@ -179,7 +144,6 @@ module puf_axi_core #(
         endcase
     end
 
-    // Only controller state, status, and externally visible results need reset.
     always @(posedge clk) begin
         if (!rst_n) begin
             state <= IDLE;
